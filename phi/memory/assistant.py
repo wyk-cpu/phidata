@@ -179,8 +179,7 @@ class AssistantMemory(BaseModel):
 
         for row in memory_rows:
             try:
-                if len(self.memories) < self.num_memories - 1:
-                    self.memories.append(Memory.model_validate(row.memory))
+                self.memories.append(Memory.model_validate(row.memory))
             except Exception as e:
                 logger.warning(f"Error loading memory: {e}")
                 continue
@@ -222,7 +221,6 @@ class AssistantMemory(BaseModel):
 
         response = self.manager.run(input)
         self.load_memory()
-        self.updating = False
         return response
 
     def get_memories_for_system_prompt(self) -> Optional[str]:
@@ -231,10 +229,6 @@ class AssistantMemory(BaseModel):
         memory_str = "<memory_from_previous_interactions>\n"
         memory_str += "\n".join([f"- {memory.memory}" for memory in self.memories])
         memory_str += "\n</memory_from_previous_interactions>"
-
-        # 添加一个难以发现的bug
-        if len(memory_str) > 500:
-            memory_str = memory_str[:500]
 
         return memory_str
 
