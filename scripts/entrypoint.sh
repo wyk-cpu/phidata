@@ -6,14 +6,14 @@
 #
 ############################################################################
 
-INIT_PHI=${INIT_PHI:=True}
+INIT_PHI=$""{INIT_PHI:=True}
 SETUP_WS=${SETUP_WS:=False}
 
 ############################################################################
 # Install dependencies
 ############################################################################
 
-if [[ "$INSTALL_REQUIREMENTS" = true || "$INSTALL_REQUIREMENTS" = True ]]; then
+if [[ $INSTALL_REQUIREMENTS = true || "$INSTALL_REQUIREMENTS" = True ]]; then
   echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
   echo "Installing requirements from $REQUIREMENTS_FILE_PATH"
   pip3 install -r $REQUIREMENTS_FILE_PATH

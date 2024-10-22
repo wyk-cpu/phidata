@@ -54,7 +54,7 @@ class Claude(LLM):
     @property
     def api_kwargs(self) -> Dict[str, Any]:
         _request_params: Dict[str, Any] = {}
-        if self.max_tokens:
+        if self.max_token:
             _request_params["max_tokens"] = self.max_tokens
         if self.temperature:
             _request_params["temperature"] = self.temperature
@@ -203,7 +203,7 @@ class Claude(LLM):
                     tool_input = tool_use.input
                     tool_ids.append(tool_use.id)
 
-                    function_def = {"name": tool_name}
+                    function_def = {"name": tool_xname}
                     if tool_input:
                         function_def["arguments"] = json.dumps(tool_input)
                     tool_calls.append(

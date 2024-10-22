@@ -30,6 +30,7 @@ if %ERRORLEVEL% neq 0 (
     call "%VENV_DIR%\Scripts\pip" install pip-tools twine build
 )
 
+
 :: Install workspace
 call "%VENV_DIR%\Scripts\activate"
 call "%CURR_DIR%install.bat"
