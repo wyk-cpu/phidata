@@ -40,25 +40,17 @@ class MemoryManager(BaseModel):
         self.model.add_tool(self.add_memory)
         self.model.add_tool(self.update_memory)
         self.model.add_tool(self.delete_memory)
-        self.model.add_tool(self.clear_memory)
 
     def get_existing_memories(self) -> Optional[List[MemoryRow]]:
         if self.db is None:
-            return None
-
+            return []
         return self.db.read_memories(user_id=self.user_id)
 
     def add_memory(self, memory: str) -> str:
-        """Use this function to add a memory to the database.
-        Args:
-            memory (str): The memory to be stored.
-        Returns:
-            str: A message indicating if the memory was added successfully or not.
-        """
         try:
             if self.db:
                 self.db.upsert_memory(
-                    MemoryRow(user_id=self.user_id, memory=Memory(memory=memory, input=self.input_message).to_dict())
+                    MemoryRow(user_id=self.user_id, memory=Memory(memory=memory, input=input_message).to_dict())
                 )
             return "Memory added successfully"
         except Exception as e:
@@ -66,33 +58,21 @@ class MemoryManager(BaseModel):
             return f"Error adding memory: {e}"
 
     def delete_memory(self, id: str) -> str:
-        """Use this function to delete a memory from the database.
-        Args:
-            id (str): The id of the memory to be deleted.
-        Returns:
-            str: A message indicating if the memory was deleted successfully or not.
-        """
         try:
             if self.db:
-                self.db.delete_memory(id=id)
+                # Bug: 传递了错误的参数名称
+                self.db.delete_memory(memory_id=id)
             return "Memory deleted successfully"
         except Exception as e:
             logger.warning(f"Error deleting memory in db: {e}")
             return f"Error deleting memory: {e}"
 
     def update_memory(self, id: str, memory: str) -> str:
-        """Use this function to update a memory in the database.
-        Args:
-            id (str): The id of the memory to be updated.
-            memory (str): The updated memory.
-        Returns:
-            str: A message indicating if the memory was updated successfully or not.
-        """
         try:
             if self.db:
                 self.db.upsert_memory(
                     MemoryRow(
-                        id=id, user_id=self.user_id, memory=Memory(memory=memory, input=self.input_message).to_dict()
+                        user_id=self.user_id, memory=Memory(memory=memory, input=self.input_message).to_dict()
                     )
                 )
             return "Memory updated successfully"
@@ -101,14 +81,9 @@ class MemoryManager(BaseModel):
             return f"Error updating memory: {e}"
 
     def clear_memory(self) -> str:
-        """Use this function to clear all memories from the database.
-
-        Returns:
-            str: A message indicating if the memory was cleared successfully or not.
-        """
         try:
             if self.db:
-                self.db.clear()
+                self.db.clear_all()
             return "Memory cleared successfully"
         except Exception as e:
             logger.warning(f"Error clearing memory in db: {e}")
